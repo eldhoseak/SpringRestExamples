@@ -1,5 +1,6 @@
 package com.spring.rest.service;
 
+import com.spring.rest.exception.ResourceNotFoundException;
 import com.spring.rest.model.Person;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,7 @@ public class PersonService {
 	}
 
 	// return all persons
-	public List<Person> getAllPersons(){
+	public List<Person> getAllPersons() throws ResourceNotFoundException {
 
 
 		List<Person> personList = new ArrayList<Person>();
@@ -33,11 +34,21 @@ public class PersonService {
 		{
 			personList.add(person);
 		}
+		if(personList.isEmpty()){
+			throw new ResourceNotFoundException("Person details is not found in databse.");
+		}
+
 		return personList;
 	}
 
-	public Person findByName (String name){
-		return personsDB.get(name);
+	public Person findByName (String name) throws ResourceNotFoundException {
+
+		Person person = personsDB.get(name);
+		if(person == null){
+			throw new ResourceNotFoundException("Person "+name+" is not found in databse.");
+		}
+
+		return person;
 	}
 
 	public Person deletePerson (String name){
